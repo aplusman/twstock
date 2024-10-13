@@ -6,7 +6,9 @@ on:
       - master
   workflow_dispatch:
   schedule:
-    - cron: '0 1 * * *'  # At 01:00 AM each day
+    - cron: '0 5 * * *'  # 1 AM Taipei time (5 AM UTC)
+    - cron: '0 11 * * *' # 7 PM Taipei time (11 AM UTC)
+    - cron: '0 12 * * *' # 8 PM Taipei time (12 PM UTC)
 
 jobs:
   run-python-script:
@@ -23,25 +25,32 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Cache Python dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
       - name: Install python packages
         run: |
           python -m pip install --upgrade pip
-          pip install -r config/requirements.txt  # Install packages from requirements.txt 
+          pip install -r config/requirements.txt  # Install packages from requirements.txt
 
       - name: Execute Python script
         run: |
           set -e
-          python3 ./src/daily_update.py
+          python ./src/daily_update.py
 
       - name: Commit files
         run: |
           git config --local user.email "aplusman@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "Run workflow on $(date +'%I %p on %m-%d-%Y')" --allow-empty)
+          git commit -m "Run workflow on $(date +'%I %p on %m-%d-%Y')" || echo "No changes to commit"
 
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # This token is automatically provided by GitHub, no need for secrets
-          branch: master
+          github_token: ${{ secrets.GITHUB_TOKEN }}
