@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import argparse
+import sys
+
 from fetch import __update_codes
 import best_four_point
 import stock
@@ -30,3 +32,4 @@ def run():
     else:
         parser.print_help()
 run()
+sys.exit(0)

@@ -28,6 +28,7 @@ jobs:
 
       - name: Execute Python script
         run: |
+          set -x  # Enable debugging
           python src/main.py -U
           python src/compute_eps_csv.py
 
