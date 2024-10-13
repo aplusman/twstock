@@ -70,7 +70,7 @@ def analyze_stocks(filtered_stocks):
 def save_output(output_data):
     """Save the analysis results to a CSV file."""
     df_output = pd.DataFrame(output_data, columns=['idx', 'name', 'price', 'date', 'reason', 'eps', 'eps_quarter'])
-    df_output['pe_ratio'] = df_output['price'] / df_output['eps']
+    df_output['pe_ratio'] = round(df_output['price'] / df_output['eps'], 2)
     df_output = df_output.sort_values('pe_ratio')
     
     df_output.to_csv(OUTPUT_FILE, index=False)
