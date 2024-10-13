@@ -28,7 +28,7 @@ jobs:
 
       - name: Execute Python script
         run: |
-          python3 ./src/main.py -U
+          python src/main.py -U
           python src/compute_eps_csv.py
 
       - name: Commit files
