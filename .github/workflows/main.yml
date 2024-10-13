@@ -11,6 +11,8 @@ on:
 jobs:
   run-python-script:
     runs-on: ubuntu-latest
+    env:
+      TZ: "Asia/Taipei"  # Set the desired timezone here
 
     steps:
       - name: Checkout code
@@ -27,14 +29,16 @@ jobs:
           pip install -r config/requirements.txt  # Install packages from requirements.txt 
 
       - name: Execute Python script
-        run: python3 ./src/daily_update.py
+        run: |
+          set -e
+          python3 ./src/daily_update.py
 
       - name: Commit files
         run: |
           git config --local user.email "aplusman@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "Updated files on $(date +'%Y-%m-%d %H:%M:%S')" --allow-empty)
+          git diff-index --quiet HEAD || (git commit -a -m "Run workflow on $(date +'%I %p on %m-%d-%Y')" --allow-empty)
 
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
