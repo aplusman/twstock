@@ -5,7 +5,7 @@ import time
 
 # Import packages
 from fetch import __update_codes
-from compute_eps_csv import main as computer_eps_and_output_csv
+from compute_eps_csv import main as compute_eps_and_output_csv
 
 if __name__ == "__main__":
     print("Start to update the database")
@@ -13,4 +13,4 @@ if __name__ == "__main__":
     time.sleep(5)
     print("Done!")
 
-    computer_eps_and_output_csv()
+    compute_eps_and_output_csv()

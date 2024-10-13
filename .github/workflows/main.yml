@@ -6,9 +6,8 @@ on:
       - master
   workflow_dispatch:
   schedule:
-    - cron: '0 5 * * *'  # 1 AM Taipei time (5 AM UTC)
-    - cron: '0 11 * * *' # 7 PM Taipei time (11 AM UTC)
-    - cron: '0 12 * * *' # 8 PM Taipei time (12 PM UTC)
+    - cron: '0 10 * * *'  # 6 PM Taipei time (10 AM UTC)
+    - cron: '0 17 * * *' # 1 AM Taipei time (5 PM UTC)
 
 jobs:
   run-python-script:
@@ -48,7 +47,7 @@ jobs:
           git config --local user.email "aplusman@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git commit -m "Run workflow on $(date +'%I %p on %m-%d-%Y')" || echo "No changes to commit"
+          git commit -m "Deployed on $(date +'%I %p on %m-%d-%Y')" || echo "No changes to commit"
 
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
