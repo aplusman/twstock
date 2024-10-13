@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import twstock
+# import twstock
 
 
 def run(argv):

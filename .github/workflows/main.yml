@@ -1,0 +1,45 @@
+name: Python Script Workflow
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'  # At 01:00 AM each day
+
+jobs:
+  run-python-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r config/requirements.txt  # Install packages from requirements.txt 
+
+      - name: Execute Python script
+        run: |
+          python3 ./src/main.py -U
+          python src/compute_eps_csv.py
+
+      - name: Commit files
+        run: |
+          git config --local user.email "aplusman@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "Updated files" --allow-empty)
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # This token is automatically provided by GitHub, no need for secrets
+          branch: master

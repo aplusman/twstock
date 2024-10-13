@@ -13,7 +13,7 @@ from collections import namedtuple
 import requests
 from lxml import etree
 
-from twstock.proxy import get_proxies
+from proxy import get_proxies
 
 TWSE_EQUITIES_URL = "https://isin.twse.com.tw/isin/C_public.jsp?strMode=2"
 TPEX_EQUITIES_URL = "https://isin.twse.com.tw/isin/C_public.jsp?strMode=4"
@@ -60,10 +60,10 @@ def __update_codes():
     def get_directory():
         return os.path.dirname(os.path.abspath(__file__))
 
-    to_csv(TWSE_EQUITIES_URL, os.path.join(get_directory(), "twse_equities.csv"))
-    to_csv(TPEX_EQUITIES_URL, os.path.join(get_directory(), "tpex_equities.csv"))
+    to_csv(TWSE_EQUITIES_URL, os.path.join(get_directory(), "../data/twse_equities.csv"))
+    to_csv(TPEX_EQUITIES_URL, os.path.join(get_directory(), "../data/tpex_equities.csv"))
 
 
 if __name__ == "__main__":
-    to_csv(TWSE_EQUITIES_URL, "twse_equities.csv")
-    to_csv(TPEX_EQUITIES_URL, "tpex_equities.csv")
+    to_csv(TWSE_EQUITIES_URL, "../data/twse_equities.csv")
+    to_csv(TPEX_EQUITIES_URL, "../data/tpex_equities.csv")

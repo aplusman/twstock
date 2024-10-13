@@ -1,27 +1,3 @@
-![GitHub Actions Status](https://github.com/mlouielu/twstock/actions/workflows/ci.yml/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/mlouielu/twstock/badge.svg?branch=master)](https://coveralls.io/github/mlouielu/twstock?branch=master)
-[![PyPI version](https://badge.fury.io/py/twstock.svg)](https://badge.fury.io/py/twstock)
-[![Documentation Status](https://readthedocs.org/projects/twstock/badge/?version=latest)](http://twstock.readthedocs.io/zh_TW/latest/?badge=latest)
-
-
-有任何問題歡迎透過 [Gitter.im](https://gitter.im/twstock/Lobby) 詢問。
-
-twstock 台灣股市股票價格擷取
-----------------------------
-
-擷取台灣證券交易所之股價資料
-重新製作 toomore/grs 之功能
-
-資料來源:
-
-* [證券交易所 (TWSE)](http://www.twse.com.tw)
-* [證券櫃台買賣中心 (TPEX)](http://www.tpex.org.tw)
-
-(請注意，TWSE 有 request limit, 每 5 秒鐘 3 個 request，超過的話會被 ban 掉，請自行注意)
-
-## Documentation
-
-* [twstock documentation (正體中文)](http://twstock.readthedocs.io/zh_TW/latest)
 
 ## Requirements
 
@@ -29,35 +5,17 @@ twstock 台灣股市股票價格擷取
 * lxml
 * requests
 
-## Install
-
-By PyPi
-
-```
-$ python -m pip install --user twstock
-```
-
-By Source
-
-```
-$ git clone https://github.com/mlouielu/twstock
-$ cd twstock
-$ pipenv install
-```
-
-By Source & install
-
-```
-$ git clone https://github.com/mlouielu/twstock
-$ cd twstock
-$ python -m pip install --user flit
-$ flit install
-```
-
 ## CLI Tools
 
 ```
-$ twstock -b 2330 6223
+python3 ./main.py -b 2330 6223
+python3 ./main.py -s 2330 6223
+python3 ./compute_eps_csv.py
+```
+
+* Output Log
+
+```
 四大買賣點判斷 Best Four Point
 ------------------------------
 2330: Buy   量大收紅
@@ -65,7 +23,6 @@ $ twstock -b 2330 6223
 ```
 
 ```
-$ twstock -s 2330 6223
 -------------- 2330 ----------------
 high : 215.0 214.0 210.0 210.5 208.5
 low  : 212.0 211.0 208.0 208.5 206.5

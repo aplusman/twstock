@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import argparse
-from twstock.codes import __update_codes
-from twstock.cli import best_four_point
-from twstock.cli import stock
-from twstock.cli import realtime
+from fetch import __update_codes
+import best_four_point
+import stock
+import realtime
 
 
 def run():
@@ -29,3 +29,4 @@ def run():
         print("Done!")
     else:
         parser.print_help()
+run()
