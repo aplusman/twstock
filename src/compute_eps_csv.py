@@ -6,7 +6,7 @@ from analytics import *
 from stock import *
 
 # Parameters
-EPS_MIN_THRESHOLD = 3
+EPS_MIN_THRESHOLD = 2.0
 DATA_DIR = './data'
 INPUT_FILE = os.path.join(DATA_DIR, 'StockList1011.csv')
 OUTPUT_FILE = os.path.join(DATA_DIR, 'outputToBuy.csv')
@@ -32,6 +32,13 @@ def filter_stocks(df):
     """Filter stocks based on EPS threshold."""
     interested_column_name = 'EPS(元) ▼'
     filtered_stocks = df[df[interested_column_name] >= EPS_MIN_THRESHOLD]
+    interested_column_name = '營收成長(%)'
+    filtered_stocks = filtered_stocks[filtered_stocks[interested_column_name] >= 0]
+    interested_column_name = '淨利成長(%)'
+    filtered_stocks = filtered_stocks[filtered_stocks[interested_column_name] >= 0]
+    interested_column_name = 'EPS增減(元)'
+    filtered_stocks = filtered_stocks[filtered_stocks[interested_column_name] >= 0]
+
     return filtered_stocks
 
 def analyze_stocks(filtered_stocks):
