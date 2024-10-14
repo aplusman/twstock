@@ -1,10 +1,9 @@
 # twstock
 
-## Requirements
-
-* Python 3
-* lxml
-* requests
+* Requirements
+  * Python 3
+  * lxml
+  * requests
 
 ## CLI Tools
 
