@@ -41,7 +41,7 @@ def export_finantial_today_info():
     stockIDs, stockNames = get_stock_id_list()
     # Instantiate the StockDataFetcher and fetch data
     fetcher = StockDataFetcher(stockIDs, stockNames)
-    fetcher.fetch_data()
+    fetcher.fetch_all_data()
 
     # Save the data to a CSV file
     fetcher.save_to_csv(output_stock_status_path)

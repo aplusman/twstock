@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+import concurrent.futures
+
 import realtime
 from analytics import BestFourPoint
 from stock import Stock, DATATUPLE
@@ -57,21 +59,27 @@ def main():
     buy_list = []
     output_data = []
 
-    for stock_idx in interested_stocks:
-        try:
-            stock, realtime_stock_info, realtime_stock = fetch_stock_data(stock_idx)
-            stock = create_new_data_entry(stock, realtime_stock)
+    # Use ThreadPoolExecutor for concurrent fetching
+    with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
+        # Start the fetch operation for all stocks
+        future_to_stock = {executor.submit(fetch_stock_data, stock_idx): stock_idx for stock_idx in interested_stocks}
 
-            buy_signal = analyze_stock(stock)
+        for future in concurrent.futures.as_completed(future_to_stock):
+            stock_idx = future_to_stock[future]
+            try:
+                stock, realtime_stock_info, realtime_stock = future.result()
+                stock = create_new_data_entry(stock, realtime_stock)
 
-            if buy_signal:
-                print(f"#{stock_idx} {realtime_stock_info['name']} (real-time price {stock.price[-1]}) "
-                      f"is recommended because {buy_signal}.")
-                buy_list.append(int(stock_idx))
-                output_data.append([stock_idx, realtime_stock_info['name'], stock.price[-1], stock.date[-1], buy_signal])
+                buy_signal = analyze_stock(stock)
 
-        except Exception as e:
-            print(f'Error occurs for the stock #{stock_idx}: {e}')
+                if buy_signal:
+                    print(f"#{stock_idx} {realtime_stock_info['name']} (real-time price {stock.price[-1]}) "
+                          f"is recommended because {buy_signal}.")
+                    buy_list.append(int(stock_idx))
+                    output_data.append([stock_idx, realtime_stock_info['name'], stock.price[-1], stock.date[-1], buy_signal])
+
+            except Exception as e:
+                print(f'Error occurs for the stock #{stock_idx}: {e}')
 
     print('Buy list:', buy_list)
     save_output(output_data)

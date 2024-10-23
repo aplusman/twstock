@@ -2,11 +2,11 @@
 import pandas as pd
 import os
 import traceback
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from analytics import *
 from stock import *
 
 # Parameters
-EPS_MIN_THRESHOLD = 2.0
 DATA_DIR = './data'
 INPUT_FILE = os.path.join(DATA_DIR, 'interesting_stocks.csv')
 OUTPUT_FILE = os.path.join(DATA_DIR, 'outputToBuy.csv')
@@ -21,34 +21,46 @@ def load_data(file_path):
     return pd.read_csv(file_path)
 
 def get_stock_id_list(pandas_data):
-    stock_list = pandas_data[stockID_column_name].to_numpy()
-    return stock_list
+    return pandas_data[stockID_column_name].to_numpy()
+
+def analyze_single_stock(stock_idx, stock_set):
+    """Analyze a single stock and return the result."""
+    try:
+        stock = Stock(str(stock_idx))
+        bfp = BestFourPoint(stock)
+        buy_signal = bfp.best_four_point_to_buy()
+
+        if buy_signal:
+            current_stock_info = stock_set[stock_set[stockID_column_name] == stock_idx]
+            print(f"You can buy the stock #{stock_idx} (closing price {stock.price[-1]} on {stock.date[-1]}) because {buy_signal}.")
+
+            return (int(stock_idx),
+                    current_stock_info.iloc[0]['name'],
+                    stock.price[-1],
+                    stock.date[-1],
+                    buy_signal,
+                    current_stock_info.iloc[0]['volume'],
+                    current_stock_info.iloc[0]['EPS_quater_newest'],
+                    current_stock_info.iloc[0]['pe_ratio'])
+    except Exception as e:
+        print(f'Error occurs for the stock #{stock_idx}')
+        print(e)
+        traceback.print_exc()
+    return None
 
 def analyze_stocks(filtered_stocks, stock_set):
-    """Analyze stocks and determine which ones to buy."""
+    """Analyze stocks in parallel and determine which ones to buy."""
     output_data = []
     buy_list = []
-    
-    for stock_idx in filtered_stocks: 
-        try:
-            stock = Stock(str(stock_idx))
-            bfp = BestFourPoint(stock)
-            buy_signal = bfp.best_four_point_to_buy()
-            
-            if buy_signal:
-                current_stock_info = stock_set[stock_set[stockID_column_name] == stock_idx]
-                print(f"You can buy the stock #{stock_idx} (closing price {stock.price[-1]} on {stock.date[-1]}) because {buy_signal}.")
 
-                buy_list.append(int(stock_idx))
-                output_data.append([stock_idx, current_stock_info.iloc[0]['name'], stock.price[-1], stock.date[-1], buy_signal, \
-                        current_stock_info.iloc[0]['volume'], \
-                        current_stock_info.iloc[0]['EPS_quater_newest'], \
-                        current_stock_info.iloc[0]['pe_ratio']])
-        
-        except Exception as e:
-            print(f'Error occurs for the stock #{stock_idx}')
-            print(e)
-            traceback.print_exc()
+    with ThreadPoolExecutor(max_workers=7) as executor:
+        future_to_stock = {executor.submit(analyze_single_stock, stock_idx, stock_set): stock_idx for stock_idx in filtered_stocks}
+
+        for future in as_completed(future_to_stock):
+            result = future.result()
+            if result:
+                buy_list.append(result[0])
+                output_data.append(result)
 
     return buy_list, output_data
 
