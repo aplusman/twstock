@@ -8,9 +8,12 @@
 ## CLI Tools
 
 ```
-python3 ./main.py -b 2330 6223
-python3 ./main.py -s 2330 6223
-python3 ./compute_eps_csv.py
+python3 ./src/main.py -b 2330 6223
+python3 ./src/main.py -s 2330 6223
+# python3 ./src/compute_eps_csv.py
+python3 ./src/export_financil_status.py
+python3 ./src/evaluate_interesting_stocks.py
+python3 ./src/track_realtime_stocks.py
 ```
 
 * Output Log

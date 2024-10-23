@@ -6,8 +6,11 @@ on:
       - master
   workflow_dispatch:
   schedule:
+    - cron: '0 2 * * *' # 10 AM Taipei time (2 AM UTC)
+    - cron: '0 3 * * *' # 11 AM Taipei time (3 AM UTC)
+    - cron: '0 4 * * *'  # 12 PM Taipei time (4 AM UTC)
+    - cron: '0 8 * * *'  # 4 PM Taipei time (8 AM UTC)
     - cron: '0 10 * * *'  # 6 PM Taipei time (10 AM UTC)
-    - cron: '0 17 * * *' # 1 AM Taipei time (5 PM UTC)
 
 jobs:
   run-python-script:
@@ -41,6 +44,19 @@ jobs:
         run: |
           set -e
           python ./src/daily_update.py
+            - name: Execute Python script
+        run: |
+          set -e
+          current_hour=$(date +'%H')
+          if [ "$current_hour" -eq 16 ] || [ "$current_hour" -eq 18 ]; then
+            python ./src/daily_update.py
+          elif [ "$current_hour" -eq 10 ] || [ "$current_hour" -eq 11 ] || [ "$current_hour" -eq 12 ]; then
+            python ./src/track_realtime_stocks.py
+          else
+            echo "No script is scheduled to run at this hour. Default: run both"
+            python ./src/daily_update.py
+            python ./src/track_realtime_stocks.py
+          fi
 
       - name: Commit files
         run: |
