@@ -43,10 +43,6 @@ jobs:
       - name: Execute Python script
         run: |
           set -e
-          python ./src/daily_update.py
-            - name: Execute Python script
-        run: |
-          set -e
           current_hour=$(date +'%H')
           if [ "$current_hour" -eq 16 ] || [ "$current_hour" -eq 18 ]; then
             python ./src/daily_update.py
