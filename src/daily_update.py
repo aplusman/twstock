@@ -7,7 +7,7 @@ import time
 from fetch import __update_codes
 # from compute_eps_csv import main as compute_eps_and_output_csv
 
-from export_finantial_status import export_finantial_today_info
+from export_financial_status import export_finantial_today_info
 from evaluate_interesting_stocks import evaluate_potential_stocks
 
 if __name__ == "__main__":
