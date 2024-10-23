@@ -17,7 +17,7 @@ class StockDataFetcher:
                                     "pe_ratio", "volume", "revenue_previous", "revenue_newest"]
 
     def fetch_all_data(self):
-        with ThreadPoolExecutor(max_workers=4) as executor:
+        with ThreadPoolExecutor(max_workers=2) as executor:
             futures = {executor.submit(self.fetch_data, stock_id): stock_id for stock_id in self.stocks.keys()}
             for count, future in enumerate(as_completed(futures), start=1):
                 stock_id = futures[future]
